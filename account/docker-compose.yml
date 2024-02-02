@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  reverse-proxy:
+  ## The official v2 Traefik to listen to docker
+    image: traefik:v2.2
+  ## Enable the Web UI and Treafik to liaten to docker 
+    command:
+      - "--api.insecure=true"  ## Enables the Traefik API over HTTP (not recommended for production) -- making use of http and not tls
+      - "--providers.docker"  ## Uses Docker a s a provider for discovering services.
+      - "--providers.docker.ExposedByDefault=false" ### Containers won't be exposed by default
+    ports:
+      - "80:80" ## Maps port 80 of the host to Traefik's port 80 for HTTP traffic
+    # the Web UI (enabled by api.insecure=true)
+      - "8080:8080"  ## Maps port 8080 of the host to Traefik's port 8080 for the Web UI.
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  ## Mounts the Docker socket, allowing Traefik to interact with the Docker daemon for service discovery.
+  ## second service
+  account:
+    build:
+      context: "./account"  ##  Builds from the ./account directory.
+      target: builder  ## specifying the target of the multi-stage build
+    image: account  ## Names the built image as account.
+    expose:  ### Makes port 8080 inside the container available to linked services, not to the host.
+      - "8080"
+    labels:
+      - "traefik.enable=true"  ## Instructs Traefik to handle this service (traefik.enable=true)
+      - "traefik.http.routers.account.rule=Host(`malcorp.test`) && Pathprefix(`/api/account`)"  ### Defines a rule for routing (Host(malcorp.test) && PathPrefix(/api/account)), meaning requests to malcorp.test/api/account will be forwarded to this service.
+    environment:
+      - ENV=dev
+    volumes:
+      - ./account:/src/app/go   ##  Mounts the ./account directory for live code reloading.
+    ## have to use $$ (souble-dollar-sign) so docker doesnt try to substitue a variable
+    command: reflex -r "\.go$$" -s -- sh -c "go run ./"  ## Uses Reflex for automatic rebuilds and restarts when Go files change.  The double-dollar ($$) is used to escape the dollar sign in Docker Compose files, preventing variable substitution by Docker.
+
+    ## testin app
+
+
