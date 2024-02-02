@@ -7,8 +7,8 @@ Tools used for the app
 **Traefik**: Used to implement dynamic routing.<br>
 **Docker**: containerized the Golang application and set up postgresql.<br>
 **Docker-compose:** :
-- Setting up both Traefik container and the application container service
-- Enabling Traefik to find and route traffic to the app ( "account") service based on URL patterns.
+- Used to set up both Traefik container and the application container service
+- Enabled Traefik to find and route traffic to the app ( "account") service based on URL patterns.
 - Automatically rebuilding and restarting the app ( "account" service) on Go code changes
 
 
