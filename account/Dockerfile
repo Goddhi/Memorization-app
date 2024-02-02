@@ -1,5 +1,5 @@
 ## implementing multi-stage build
-FROM golang:alpine as builder  
+FROM golang:1.19-alpine as builder  
 
 ## Development contianer
 ENV GO111MODULE=on 

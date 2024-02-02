@@ -1,5 +1,5 @@
 version: '3.8'
-services:
+services:  
   reverse-proxy:
   ## The official v2 Traefik to listen to docker
     image: traefik:v2.2
@@ -17,7 +17,7 @@ services:
   ## second service
   account:
     build:
-      context: "./account"  ##  Builds from the ./account directory.
+      context: ./account  ##  Builds from the ./account directory.
       target: builder  ## specifying the target of the multi-stage build
     image: account  ## Names the built image as account.
     expose:  ### Makes port 8080 inside the container available to linked services, not to the host.
@@ -32,6 +32,5 @@ services:
     ## have to use $$ (souble-dollar-sign) so docker doesnt try to substitue a variable
     command: reflex -r "\.go$$" -s -- sh -c "go run ./"  ## Uses Reflex for automatic rebuilds and restarts when Go files change.  The double-dollar ($$) is used to escape the dollar sign in Docker Compose files, preventing variable substitution by Docker.
 
-    ## testin app
-
-
+     
+### testing th

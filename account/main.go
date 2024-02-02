@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/goddhi/memorization/handler"
 
 
 ) 
@@ -21,17 +22,21 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/api/account", func(c *gin.Context) {// gi.context contains both the request and  response 
-		c.JSON(http.StatusOK, gin.H{
-			"Hello": "your account is up",
-		}) 
+	// router.GET("/api/account", func(c *gin.Context) {// gi.context contains both the request and  response 
+	// 	c.JSON(http.StatusOK, gin.H{
+	// 		"Hello": "your account is up",
+	// 	}) 
+	// })
+	
+	handler.Newhandler(&handler.Config{
+		R : router,
 	})
 
 	srv := &http.Server {
 		Addr: ":8080",
 		Handler: router,
 	}
-
+//
 	/// Gracefully Server shutdown
 	go func() {  // setting up the server
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
